@@ -1,6 +1,7 @@
 package me.jddev0;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import me.jddev0.module.lang.*;
@@ -97,6 +98,49 @@ public class IOModule extends LangNativeModule {
 
 			File file = openedFiles.get(fileID);
 			return createDataObject(file.canExecute());
+		})));
+
+		exportFunctionPointerVariableFinal("createFile", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+			try {
+				return createDataObject(file.createNewFile());
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		})));
+		exportFunctionPointerVariableFinal("makeDirectory", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+			try {
+				return createDataObject(file.mkdir());
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		})));
+		exportFunctionPointerVariableFinal("makeDirectories", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+			try {
+				return createDataObject(file.mkdirs());
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
 		})));
 
 		return null;

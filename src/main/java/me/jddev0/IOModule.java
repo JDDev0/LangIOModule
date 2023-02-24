@@ -1,7 +1,6 @@
 package me.jddev0;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import me.jddev0.module.lang.*;
@@ -212,8 +211,23 @@ public class IOModule extends LangNativeModule {
 	
 	@Override
 	public DataObject unload(List<DataObject> args, final int SCOPE_ID) {
-		//Unload all files
-		openedFiles.clear();
+		if(!openedFiles.isEmpty()) {
+			try {
+				callPredefinedFunction("println", Arrays.asList(
+						createDataObject("WARNING: " + openedFiles.size() + " files were not closed!")
+				), SCOPE_ID);
+				callPredefinedFunction("println", Arrays.asList(
+						createDataObject("The IDs of the files which were not be closed will be returned as an array.")
+				), SCOPE_ID);
+
+				DataObject[] notYetClosedFiles = openedFiles.keySet().stream().map(this::createDataObject).toArray(DataObject[]::new);
+
+				return createDataObject(notYetClosedFiles);
+			}finally {
+				//Unload all files
+				openedFiles.clear();
+			}
+		}
 
 		return null;
 	}

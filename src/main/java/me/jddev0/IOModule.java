@@ -167,6 +167,33 @@ public class IOModule extends LangNativeModule {
 			}
 		})));
 
+		exportFunctionPointerVariableFinal("rename", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer2Arg)(interpreter, fileFromID, fileToIDObject, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileFromID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File fileFrom = openedFiles.get(fileFromID);
+
+			Number fileIDNumber = fileToIDObject.toNumber();
+			if(fileIDNumber == null)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument 2 must be a number", INNER_SCOPE_ID);
+
+			int fileToID = fileIDNumber.intValue();
+
+			if((errorObject = checkFileOpened(lii, fileToID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File fileTo = openedFiles.get(fileToID);
+
+			try {
+				return createDataObject(fileFrom.renameTo(fileTo));
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		})));
+
 		exportFunctionPointerVariableFinal("delete", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 

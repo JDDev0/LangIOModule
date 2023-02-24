@@ -46,8 +46,10 @@ public class IOModule extends LangNativeModule {
 				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument must be a number", INNER_SCOPE_ID);
 
 			int fileID = fileIDNumber.intValue();
-			if(!openedFiles.containsKey(fileID))
-				return lii.setErrnoErrorObject(InterpretingError.FILE_NOT_FOUND, "The file with the ID " + fileIDNumber + " is not opened", INNER_SCOPE_ID);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
 
 			openedFiles.remove(fileID);
 
@@ -61,6 +63,13 @@ public class IOModule extends LangNativeModule {
 	public DataObject unload(List<DataObject> args, final int SCOPE_ID) {
 		//Unload all files
 		openedFiles.clear();
+
+		return null;
+	}
+
+	private DataObject checkFileOpened(LangInterpreterInterface lii, int fileID, final int SCOPE_ID) {
+		if(!openedFiles.containsKey(fileID))
+			return lii.setErrnoErrorObject(InterpretingError.FILE_NOT_FOUND, "The file with the ID " + fileID + " was not opened", SCOPE_ID);
 
 		return null;
 	}

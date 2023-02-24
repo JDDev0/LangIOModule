@@ -11,7 +11,7 @@ public class IOModule extends LangNativeModule {
 	private int lastFileID;
 
 	public IOModule() {
-		//ID should not start at 0
+		//ID should not start at 0 (User will not be able to use hard-coded file ids)
 		lastFileID = hashCode();
 	}
 
@@ -34,6 +34,24 @@ public class IOModule extends LangNativeModule {
 			openedFiles.put(FILE_ID, file);
 
 			return createDataObject(FILE_ID);
+		})));
+		exportFunctionPointerVariableFinal("closeFile", createDataObject(new DataObject.FunctionPointerObject((argumentList, INNER_SCOPE_ID) -> {
+			List<DataObject> combinedArgs = LangUtils.combineArgumentsWithoutArgumentSeparators(argumentList);
+			if(combinedArgs.size() != 1)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARG_COUNT, "1 argument expected", INNER_SCOPE_ID);
+
+			DataObject fileIDObject = combinedArgs.get(0);
+			Number fileIDNumber = fileIDObject.toNumber();
+			if(fileIDNumber == null)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument must be a number", INNER_SCOPE_ID);
+
+			int fileID = fileIDNumber.intValue();
+			if(!openedFiles.containsKey(fileID))
+				return lii.setErrnoErrorObject(InterpretingError.FILE_NOT_FOUND, "The file with the ID " + fileIDNumber + " is not opened", INNER_SCOPE_ID);
+
+			openedFiles.remove(fileID);
+
+			return null;
 		})));
 
 		return null;

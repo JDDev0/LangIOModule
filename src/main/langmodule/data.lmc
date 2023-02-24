@@ -1,4 +1,4 @@
-name = lang_io
+name = io
 
 minSupportedVersion = v1.0.0
 maxSupportedVersion = v2.0.0

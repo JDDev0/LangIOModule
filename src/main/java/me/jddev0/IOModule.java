@@ -68,6 +68,37 @@ public class IOModule extends LangNativeModule {
 			return createDataObject(file.isDirectory());
 		})));
 
+		exportFunctionPointerVariableFinal("isReadable", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+			return createDataObject(file.canRead());
+		})));
+		exportFunctionPointerVariableFinal("isWritable", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+			return createDataObject(file.canWrite());
+		})));
+		exportFunctionPointerVariableFinal("isExecutable", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+			return createDataObject(file.canExecute());
+		})));
+
 		return null;
 	}
 	

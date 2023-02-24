@@ -284,15 +284,32 @@ public class IOModule extends LangNativeModule {
 	@Override
 	public DataObject unload(List<DataObject> args, final int SCOPE_ID) {
 		if(!openedFiles.isEmpty()) {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
 			try {
 				callPredefinedFunction("println", Arrays.asList(
 						createDataObject("WARNING: " + openedFiles.size() + " files were not closed!")
 				), SCOPE_ID);
 				callPredefinedFunction("println", Arrays.asList(
-						createDataObject("The IDs of the files which were not be closed will be returned as an array.")
+						createDataObject("The files which were not be closed will be returned as an array of arrays in the format [[fileID1, filePath1], [fileID2, filePath2], ...].")
 				), SCOPE_ID);
 
-				DataObject[] notYetClosedFiles = openedFiles.keySet().stream().map(this::createDataObject).toArray(DataObject[]::new);
+				DataObject[] notYetClosedFiles = openedFiles.entrySet().stream().map(entry -> {
+					int id = entry.getKey();
+					File file = entry.getValue();
+
+					DataObject pathObject;
+					try {
+						pathObject = createDataObject(file.getAbsolutePath());
+					}catch(Exception e) {
+						pathObject = lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), SCOPE_ID);
+					}
+
+					return createDataObject(new DataObject[] {
+							createDataObject(id),
+							pathObject
+					});
+				}).toArray(DataObject[]::new);
 
 				return createDataObject(notYetClosedFiles);
 			}finally {

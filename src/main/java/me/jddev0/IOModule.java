@@ -235,7 +235,14 @@ public class IOModule extends LangNativeModule {
 	private int generateNextFileID(File file) {
 		do {
 			int selfHashCode = hashCode();
+			do {
+				selfHashCode += (int)System.currentTimeMillis() + (int)System.nanoTime();
+			}while(selfHashCode == 0);
+
 			int pathHashCode = file.getAbsolutePath().hashCode();
+			do {
+				selfHashCode += (int)System.currentTimeMillis() + (int)System.nanoTime();
+			}while(selfHashCode == 0);
 
 			this.currentFileID += pathHashCode % selfHashCode + selfHashCode;
 		}while(openedFiles.containsKey(this.currentFileID));

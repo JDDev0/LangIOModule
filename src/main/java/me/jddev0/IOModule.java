@@ -232,7 +232,7 @@ public class IOModule extends LangNativeModule {
 	}
 
 	/**
-	 * Should prevent dev from guessing file ids in normal lang programs [THIS IS NO SECURITY FEATURE]
+	 * Should prevent devs from introducing bugs by guessing or calculating file ids [THIS IS NO SECURITY FEATURE]
 	 */
 	private int generateNextFileID(File file) {
 		do {

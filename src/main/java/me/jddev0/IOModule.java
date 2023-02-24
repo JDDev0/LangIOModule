@@ -1,7 +1,10 @@
 package me.jddev0;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import me.jddev0.module.lang.*;
 import me.jddev0.module.lang.LangInterpreter.*;
@@ -200,6 +203,37 @@ public class IOModule extends LangNativeModule {
 			File file = openedFiles.get(fileID);
 			try {
 				return createDataObject(file.getCanonicalPath());
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		})));
+
+		exportFunctionPointerVariableFinal("readFile", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+			try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+
+				return createDataObject(reader.lines().collect(Collectors.joining("\n")));
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		})));
+		exportFunctionPointerVariableFinal("readLines", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+			try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+
+				return createDataObject(reader.lines().map(this::createDataObject).toArray(DataObject[]::new));
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}

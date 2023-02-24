@@ -1,8 +1,6 @@
 package me.jddev0;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -239,6 +237,47 @@ public class IOModule extends LangNativeModule {
 			}
 		})));
 
+		exportFunctionPointerVariableFinal("writeFile", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer2Arg)(interpreter, fileID, arg, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+
+			String data = arg.toText();
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+				writer.write(data);
+				writer.flush();
+
+				return null;
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		})));
+		exportFunctionPointerVariableFinal("writeLines", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointerVarArg)(interpreter, fileID, varArgs, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+				for(DataObject arg:varArgs) {
+					writer.write(arg.toText());
+					writer.newLine();
+				}
+				writer.flush();
+
+				return null;
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		})));
+
 		return null;
 	}
 	
@@ -313,6 +352,53 @@ public class IOModule extends LangNativeModule {
 			int fileID = fileIDNumber.intValue();
 
 			return callFileFunc(interpreter, fileID, SCOPE_ID);
+		}
+	}
+
+	@FunctionalInterface
+	private interface FileFunctionPointer2Arg extends LangExternalFunctionObject {
+		DataObject callFileFunc(LangInterpreter interpreter, int fileID, DataObject arg, int SCOPE_ID);
+
+		@Override
+		default DataObject callFunc(LangInterpreter interpreter, List<DataObject> argumentList, int SCOPE_ID) {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			List<DataObject> combinedArgs = LangUtils.combineArgumentsWithoutArgumentSeparators(argumentList);
+			if(combinedArgs.size() != 2)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARG_COUNT, "2 arguments expected", SCOPE_ID);
+
+			DataObject fileIDObject = combinedArgs.get(0);
+			Number fileIDNumber = fileIDObject.toNumber();
+			if(fileIDNumber == null)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument 1 must be a number", SCOPE_ID);
+
+			int fileID = fileIDNumber.intValue();
+
+			DataObject arg = combinedArgs.get(1);
+			return callFileFunc(interpreter, fileID, arg, SCOPE_ID);
+		}
+	}
+
+	@FunctionalInterface
+	private interface FileFunctionPointerVarArg extends LangExternalFunctionObject {
+		DataObject callFileFunc(LangInterpreter interpreter, int fileID, DataObject[] varArgs, int SCOPE_ID);
+
+		@Override
+		default DataObject callFunc(LangInterpreter interpreter, List<DataObject> argumentList, int SCOPE_ID) {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			List<DataObject> combinedArgs = LangUtils.combineArgumentsWithoutArgumentSeparators(argumentList);
+			if(combinedArgs.size() < 1)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARG_COUNT, "At least 1 argument must be provided", SCOPE_ID);
+
+			DataObject fileIDObject = combinedArgs.get(0);
+			Number fileIDNumber = fileIDObject.toNumber();
+			if(fileIDNumber == null)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument 1 must be a number", SCOPE_ID);
+
+			int fileID = fileIDNumber.intValue();
+
+			return callFileFunc(interpreter, fileID, combinedArgs.stream().skip(1).map(DataObject::new).toArray(DataObject[]::new), SCOPE_ID);
 		}
 	}
 }

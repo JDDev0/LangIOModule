@@ -8,11 +8,10 @@ import me.jddev0.module.lang.LangInterpreter.*;
 
 public class IOModule extends LangNativeModule {
 	private final Map<Integer, File> openedFiles = new HashMap<>();
-	private int lastFileID;
+	private int currentFileID;
 
 	public IOModule() {
-		//ID should not start at 0 (User will not be able to use hard-coded file ids)
-		lastFileID = hashCode();
+		currentFileID = 0;
 	}
 
 	@Override
@@ -28,8 +27,8 @@ public class IOModule extends LangNativeModule {
 			if(pathObject.getType() != DataObject.DataType.TEXT)
 				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument must be of type " + DataObject.DataType.TEXT, INNER_SCOPE_ID);
 
-			final int FILE_ID = lastFileID++;
 			File file = new File(pathObject.getText());
+			final int FILE_ID = generateNextFileID(file);
 
 			openedFiles.put(FILE_ID, file);
 
@@ -230,6 +229,18 @@ public class IOModule extends LangNativeModule {
 		}
 
 		return null;
+	}
+
+	//Prevent user from guessing file IDs
+	private int generateNextFileID(File file) {
+		do {
+			int selfHashCode = hashCode();
+			int pathHashCode = file.getAbsolutePath().hashCode();
+
+			this.currentFileID += pathHashCode % selfHashCode + selfHashCode;
+		}while(openedFiles.containsKey(this.currentFileID));
+
+		return currentFileID;
 	}
 
 	private DataObject checkFileOpened(LangInterpreterInterface lii, int fileID, final int SCOPE_ID) {

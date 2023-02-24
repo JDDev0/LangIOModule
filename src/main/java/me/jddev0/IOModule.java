@@ -28,7 +28,12 @@ public class IOModule extends LangNativeModule {
 			if(pathObject.getType() != DataObject.DataType.TEXT)
 				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument must be of type " + DataObject.DataType.TEXT, INNER_SCOPE_ID);
 
-			File file = new File(pathObject.getText());
+			String path = pathObject.getText();
+
+			if(!new File(path).isAbsolute())
+				path = interpreter.getCurrentCallStackElement().getLangPath() + File.separator + path;
+
+			File file = new File(path);
 			final int FILE_ID = generateNextFileID(file);
 
 			openedFiles.put(FILE_ID, file);

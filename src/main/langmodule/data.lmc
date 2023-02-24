@@ -1,4 +1,6 @@
 name = io
+description = This module is for reading, writing, and modifying files and directories.
+version = 1.0.0-beta
 
 minSupportedVersion = v1.0.0
 maxSupportedVersion = v2.0.0

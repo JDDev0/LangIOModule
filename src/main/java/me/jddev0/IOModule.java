@@ -231,7 +231,9 @@ public class IOModule extends LangNativeModule {
 		return null;
 	}
 
-	//Prevent user from guessing file IDs
+	/**
+	 * Should prevent dev from guessing file ids in normal lang programs [THIS IS NO SECURITY FEATURE]
+	 */
 	private int generateNextFileID(File file) {
 		do {
 			int selfHashCode = hashCode();

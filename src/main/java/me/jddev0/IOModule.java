@@ -17,9 +17,9 @@ public class IOModule extends LangNativeModule {
 
 	@Override
 	public DataObject load(List<DataObject> args, final int SCOPE_ID) {
-		LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
-
 		exportFunctionPointerVariableFinal("openFile", createDataObject(new DataObject.FunctionPointerObject((argumentList, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
 			List<DataObject> combinedArgs = LangUtils.combineArgumentsWithoutArgumentSeparators(argumentList);
 			if(combinedArgs.size() != 1)
 				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARG_COUNT, "1 argument expected", INNER_SCOPE_ID);
@@ -35,17 +35,8 @@ public class IOModule extends LangNativeModule {
 
 			return createDataObject(FILE_ID);
 		})));
-		exportFunctionPointerVariableFinal("closeFile", createDataObject(new DataObject.FunctionPointerObject((argumentList, INNER_SCOPE_ID) -> {
-			List<DataObject> combinedArgs = LangUtils.combineArgumentsWithoutArgumentSeparators(argumentList);
-			if(combinedArgs.size() != 1)
-				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARG_COUNT, "1 argument expected", INNER_SCOPE_ID);
-
-			DataObject fileIDObject = combinedArgs.get(0);
-			Number fileIDNumber = fileIDObject.toNumber();
-			if(fileIDNumber == null)
-				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument must be a number", INNER_SCOPE_ID);
-
-			int fileID = fileIDNumber.intValue();
+		exportFunctionPointerVariableFinal("closeFile", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
 			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
@@ -72,5 +63,28 @@ public class IOModule extends LangNativeModule {
 			return lii.setErrnoErrorObject(InterpretingError.FILE_NOT_FOUND, "The file with the ID " + fileID + " was not opened", SCOPE_ID);
 
 		return null;
+	}
+
+	@FunctionalInterface
+	private interface FileFunctionPointer1Arg extends LangExternalFunctionObject {
+		DataObject callFileFunc(LangInterpreter interpreter, int fileID, int SCOPE_ID);
+
+		@Override
+		default DataObject callFunc(LangInterpreter interpreter, List<DataObject> argumentList, int SCOPE_ID) {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			List<DataObject> combinedArgs = LangUtils.combineArgumentsWithoutArgumentSeparators(argumentList);
+			if(combinedArgs.size() != 1)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARG_COUNT, "1 argument expected", SCOPE_ID);
+
+			DataObject fileIDObject = combinedArgs.get(0);
+			Number fileIDNumber = fileIDObject.toNumber();
+			if(fileIDNumber == null)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument must be a number", SCOPE_ID);
+
+			int fileID = fileIDNumber.intValue();
+
+			return callFileFunc(interpreter, fileID, SCOPE_ID);
+		}
 	}
 }

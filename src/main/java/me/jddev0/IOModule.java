@@ -316,6 +316,20 @@ public class IOModule extends LangNativeModule {
 			}
 		})));
 
+		exportFunctionPointerVariableFinal("getFileSystemRoots", createDataObject(new DataObject.FunctionPointerObject((argumentList, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			List<DataObject> combinedArgs = LangUtils.combineArgumentsWithoutArgumentSeparators(argumentList);
+			if(combinedArgs.size() != 0)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARG_COUNT, "0 arguments expected", INNER_SCOPE_ID);
+
+			try {
+				return createDataObject(Arrays.stream(File.listRoots()).map(File::getAbsolutePath).map(this::createDataObject).toArray(DataObject[]::new));
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		})));
+
 		return null;
 	}
 	

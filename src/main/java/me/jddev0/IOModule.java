@@ -40,7 +40,7 @@ public class IOModule extends LangNativeModule {
 
 			return createDataObject(FILE_ID);
 		})));
-		exportFunctionPointerVariableFinal("closeFile", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("closeFile", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -50,9 +50,9 @@ public class IOModule extends LangNativeModule {
 			openedFiles.remove(fileID);
 
 			return null;
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("existsFile", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("existsFile", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -65,8 +65,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("isDirectory", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("isDirectory", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -79,9 +79,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("isReadable", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("isReadable", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -94,8 +94,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("isWritable", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("isWritable", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -108,8 +108,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("isExecutable", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("isExecutable", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -122,9 +122,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("getModificationDate", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("getModificationDate", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -137,8 +137,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("setModificationDate", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer2Arg)(interpreter, fileID, timeObject, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("setModificationDate", createFileFunctionPointer2Arg((interpreter, fileID, timeObject, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -157,9 +157,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("createFile", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("createFile", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -172,8 +172,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("makeDirectory", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("makeDirectory", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -186,8 +186,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("makeDirectories", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("makeDirectories", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -200,9 +200,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("rename", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer2Arg)(interpreter, fileFromID, fileToIDObject, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("rename", createFileFunctionPointer2Arg((interpreter, fileFromID, fileToIDObject, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -227,9 +227,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("delete", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("delete", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -242,9 +242,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("getAbsolutePath", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("getAbsolutePath", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -257,8 +257,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("getCanonicalPath", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("getCanonicalPath", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -271,9 +271,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("readFile", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("readFile", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -287,8 +287,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("readLines", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("readLines", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -302,9 +302,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("writeFile", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer2Arg)(interpreter, fileID, arg, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("writeFile", createFileFunctionPointer2Arg((interpreter, fileID, arg, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -322,8 +322,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("writeLines", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointerVarArg)(interpreter, fileID, varArgs, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("writeLines", createFileFunctionPointerVarArg((interpreter, fileID, varArgs, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -343,9 +343,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("getSize", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("getSize", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -358,9 +358,9 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
-		exportFunctionPointerVariableFinal("getParent", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		exportFunctionPointerVariableFinal("getParent", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -373,8 +373,8 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
-		exportFunctionPointerVariableFinal("listFilesAndDirectories", createDataObject(new DataObject.FunctionPointerObject((FileFunctionPointer1Arg)(interpreter, fileID, INNER_SCOPE_ID) -> {
+		}));
+		exportFunctionPointerVariableFinal("listFilesAndDirectories", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
 
 			DataObject errorObject;
@@ -391,7 +391,7 @@ public class IOModule extends LangNativeModule {
 			}catch(Exception e) {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
-		})));
+		}));
 
 		exportFunctionPointerVariableFinal("getFileSystemRoots", createDataObject(new DataObject.FunctionPointerObject((argumentList, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
@@ -448,6 +448,16 @@ public class IOModule extends LangNativeModule {
 		}
 
 		return null;
+	}
+
+	private DataObject createFileFunctionPointer1Arg(FileFunctionPointer1Arg func) {
+		return createDataObject(new DataObject.FunctionPointerObject(func));
+	}
+	private DataObject createFileFunctionPointer2Arg(FileFunctionPointer2Arg func) {
+		return createDataObject(new DataObject.FunctionPointerObject(func));
+	}
+	private DataObject createFileFunctionPointerVarArg(FileFunctionPointerVarArg func) {
+		return createDataObject(new DataObject.FunctionPointerObject(func));
 	}
 
 	/**

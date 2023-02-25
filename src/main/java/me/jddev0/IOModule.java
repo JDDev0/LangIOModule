@@ -303,6 +303,27 @@ public class IOModule extends LangNativeModule {
 				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
 			}
 		}));
+		exportFunctionPointerVariableFinal("readBytes", createFileFunctionPointer1Arg((interpreter, fileID, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			File file = openedFiles.get(fileID);
+			try(InputStream inputStream = new FileInputStream(file)) {
+				int len = (int)file.length();
+				byte[] bytes = new byte[len];
+				int byteCount = inputStream.read(bytes);
+
+				if(byteCount == -1)
+					return createDataObject(false);
+
+				return createDataObject(Arrays.copyOf(bytes, byteCount));
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		}));
 
 		exportFunctionPointerVariableFinal("writeFile", createFileFunctionPointer2Arg((interpreter, fileID, arg, INNER_SCOPE_ID) -> {
 			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
@@ -338,6 +359,28 @@ public class IOModule extends LangNativeModule {
 					writer.newLine();
 				}
 				writer.flush();
+
+				return null;
+			}catch(Exception e) {
+				return lii.setErrnoErrorObject(InterpretingError.SYSTEM_ERROR, e.getClass().getSimpleName() + " " + e.getMessage(), INNER_SCOPE_ID);
+			}
+		}));
+		exportFunctionPointerVariableFinal("writeBytes", createFileFunctionPointer2Arg((interpreter, fileID, arg, INNER_SCOPE_ID) -> {
+			LangInterpreterInterface lii = new LangInterpreterInterface(interpreter);
+
+			DataObject errorObject;
+			if((errorObject = checkFileOpened(lii, fileID, INNER_SCOPE_ID)) != null)
+				return errorObject;
+
+			if(arg.getType() != DataObject.DataType.BYTE_BUFFER)
+				return lii.setErrnoErrorObject(InterpretingError.INVALID_ARGUMENTS, "Argument 2 must be of type " + DataObject.DataType.BYTE_BUFFER, INNER_SCOPE_ID);
+
+			File file = openedFiles.get(fileID);
+
+			byte[] byteBuf = arg.getByteBuffer();
+			try(OutputStream outputStream = new FileOutputStream(file)) {
+				outputStream.write(byteBuf);
+				outputStream.flush();
 
 				return null;
 			}catch(Exception e) {

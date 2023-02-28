@@ -8,12 +8,7 @@ import me.jddev0.module.lang.*;
 import me.jddev0.module.lang.LangInterpreter.*;
 
 public class IOModule extends LangNativeModule {
-	private final Map<Integer, File> openedFiles = new HashMap<>();
-	private int currentFileID;
-
-	public IOModule() {
-		currentFileID = 0;
-	}
+	private final ObjectIDMap<File> openedFiles = new ObjectIDMap<>(file -> file.getAbsolutePath().hashCode());
 
 	@Override
 	public DataObject load(List<DataObject> args, final int SCOPE_ID) {
@@ -39,9 +34,8 @@ public class IOModule extends LangNativeModule {
 				path = interpreter.getCurrentCallStackElement().getLangPath() + File.separator + path;
 
 			File file = new File(path);
-			final int FILE_ID = generateNextFileID(file);
 
-			openedFiles.put(FILE_ID, file);
+			final int FILE_ID = openedFiles.add(file);
 
 			return createDataObject(FILE_ID);
 		})));
@@ -417,7 +411,7 @@ public class IOModule extends LangNativeModule {
 						createDataObject("The files which were not be closed will be returned as an array of arrays in the format [[fileID1, filePath1], [fileID2, filePath2], ...].")
 				), SCOPE_ID);
 
-				DataObject[] notYetClosedFiles = openedFiles.entrySet().stream().map(entry -> {
+				DataObject[] notYetClosedFiles = openedFiles.entries().stream().map(entry -> {
 					int id = entry.getKey();
 					File file = entry.getValue();
 
@@ -454,29 +448,8 @@ public class IOModule extends LangNativeModule {
 		return createDataObject(new DataObject.FunctionPointerObject(func));
 	}
 
-	/**
-	 * Should prevent devs from introducing bugs by guessing or calculating file ids [THIS IS NO SECURITY FEATURE]
-	 */
-	private int generateNextFileID(File file) {
-		do {
-			int selfHashCode = hashCode();
-			do {
-				selfHashCode += (int)System.currentTimeMillis() + (int)System.nanoTime();
-			}while(selfHashCode == 0);
-
-			int pathHashCode = file.getAbsolutePath().hashCode();
-			do {
-				selfHashCode += (int)System.currentTimeMillis() + (int)System.nanoTime();
-			}while(selfHashCode == 0);
-
-			this.currentFileID += pathHashCode % selfHashCode + selfHashCode;
-		}while(openedFiles.containsKey(this.currentFileID));
-
-		return currentFileID;
-	}
-
 	private DataObject checkFileOpened(int fileID, final int SCOPE_ID) {
-		if(!openedFiles.containsKey(fileID))
+		if(!openedFiles.containsId(fileID))
 			return throwError(InterpretingError.FILE_NOT_FOUND, "The file with the ID " + fileID + " was not opened", SCOPE_ID);
 
 		return null;

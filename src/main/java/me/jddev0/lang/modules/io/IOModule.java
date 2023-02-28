@@ -1,9 +1,10 @@
-package me.jddev0;
+package me.jddev0.lang.modules.io;
 
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import me.jddev0.lang.modules.io.util.ObjectIDMap;
 import me.jddev0.module.lang.*;
 import me.jddev0.module.lang.LangInterpreter.*;
 

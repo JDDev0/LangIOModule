@@ -1,4 +1,4 @@
-package me.jddev0;
+package me.jddev0.lang.modules.io.util;
 
 import java.util.HashMap;
 import java.util.Map;

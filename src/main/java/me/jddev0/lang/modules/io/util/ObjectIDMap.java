@@ -28,8 +28,8 @@ public class ObjectIDMap<T> {
 
             int objectHashCode = getObjectHashCode.apply(object);
             do {
-                selfHashCode += (int)System.currentTimeMillis() + (int)System.nanoTime();
-            }while(selfHashCode == 0);
+                objectHashCode += (int)System.currentTimeMillis() + (int)System.nanoTime();
+            }while(objectHashCode == 0);
 
             currentID += objectHashCode % selfHashCode + selfHashCode;
         }while(objects.containsKey(currentID));

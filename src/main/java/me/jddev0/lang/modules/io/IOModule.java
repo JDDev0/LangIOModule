@@ -5,8 +5,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import me.jddev0.lang.modules.io.util.ObjectIDMap;
-import me.jddev0.module.lang.*;
-import me.jddev0.module.lang.LangInterpreter.*;
+import at.jddev0.lang.*;
+import at.jddev0.lang.LangInterpreter.*;
 
 public class IOModule extends LangNativeModule {
 	private final ObjectIDMap<File> openedFiles = new ObjectIDMap<>(file -> file.getAbsolutePath().hashCode());

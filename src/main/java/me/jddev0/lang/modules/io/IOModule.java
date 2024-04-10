@@ -651,7 +651,7 @@ public class IOModule extends LangNativeModule {
 
 	private DataObject createNativeFunctionDataObject(Object obj) {
 		return createDataObject(new DataObject.FunctionPointerObject(
-				LangNativeFunction.getSingleLangFunctionFromObject(interpreter, obj)));
+				LangNativeFunction.getSingleLangFunctionFromObject(obj)));
 	}
 
 	private DataObject checkFileOpened(int fileID, final int SCOPE_ID) {
